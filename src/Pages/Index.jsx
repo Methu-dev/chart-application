@@ -10,6 +10,7 @@ import libaray from "../lib/lib";
 import { HashLoader } from "react-spinners";
 import { FaRegEye } from "react-icons/fa";
 import { FaEyeLowVision } from "react-icons/fa6";
+import myimage from "../../public/images.png"
 
 const SingUp = () => {
   const auth = getAuth();
@@ -192,8 +193,8 @@ const SingUp = () => {
           </p>
         </div>
       </div>
-      <div className="w-1/2 bg-yellow-500 h-screen">
-        <h2>two</h2>
+      <div className="w-1/2 h-screen">
+        <img src={myimage} alt="Pexels Image" />
       </div>
     </div>
   );
