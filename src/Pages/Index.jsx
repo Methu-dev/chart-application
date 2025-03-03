@@ -8,12 +8,15 @@ import {
 } from "firebase/auth";
 import libaray from "../lib/lib";
 import { HashLoader } from "react-spinners";
+import { FaRegEye } from "react-icons/fa";
+import { FaEyeLowVision } from "react-icons/fa6";
 
 const SingUp = () => {
   const auth = getAuth();
   const { SucessToast, ErorrToast, InfoToast } = libaray;
   const data = lib.singUpdata();
   const [email, setEmail] = useState("");
+  const [eye,setEye]=useState(false)
   const [fullName, setFullName] = useState("");
   const [password, setPassword] = useState("");
   // erro state
@@ -77,19 +80,26 @@ const SingUp = () => {
         })
         .then((mailData) => {
           InfoToast("🦄mail send sucesssfull check your email");
-          
+        }).then(()=>{
+          setLoading(false);
+          setFullName("");
+           setEmail("");
+           setPassword("")
+           console.log(" then hit ok");
+           
         })
         .catch((err) => {
           ErorrToast(err.code);
-          
         })
         .finally(()=>{
           setLoading(false);
           setFullName(" ");
            setEmail(" ");
-           setPassword(" ")
+           setPassword("")
         })
     }
+    
+    
   };
 
   return (
@@ -101,7 +111,7 @@ const SingUp = () => {
 
           <form
             action="#"
-            className="mt-10"
+            className="mt-10 relative"
             onSubmit={(e) => e.preventDefault()}
           >
             {data?.map(({ name, id }) => (
@@ -114,12 +124,13 @@ const SingUp = () => {
                   type={
                     name == "email"
                       ? "email"
-                      : name == "password"
+                      : name == "password" && !eye
                       ? "password"
                       : "text"
                   }
                   placeholder={`type your ${name}`}
                   name={name}
+                  value={name=="email" ? email:name=="password" ?password:fullName}
                   onChange={handleChange}
                   
                   className="border rounded-[3px] border-gray-500 py-1 px-2"
@@ -144,6 +155,13 @@ const SingUp = () => {
                 )}
               </div>
             ))}
+
+            {
+              eye ?<FaEyeLowVision  onClick={()=>setEye(!eye)} className="text-xl cursor-pointer absolute right-[19%] bottom-[24%]" />:
+              <FaRegEye onClick={()=>setEye(!eye)} className="text-xl cursor-pointer absolute right-[19%] bottom-[24%]" />
+            }
+            
+            
             {loading ? (
               <button
                 onClick={handleSingUp}
@@ -157,6 +175,7 @@ const SingUp = () => {
                   aria-label="Loading Spinner"
                   data-testid="loader"
                 />
+                
               </button>
             ) : (
               <button
@@ -167,6 +186,7 @@ const SingUp = () => {
               </button>
             )}
           </form>
+          
           <p className="mt-5">
             Already have an account ? <span>Sing In</span>
           </p>
