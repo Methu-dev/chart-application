@@ -11,6 +11,7 @@ import { HashLoader } from "react-spinners";
 import { FaRegEye } from "react-icons/fa";
 import { FaEyeLowVision } from "react-icons/fa6";
 import myimage from "../../public/images.png"
+import { Link } from "react-router";
 
 const SingUp = () => {
   const auth = getAuth();
@@ -189,7 +190,7 @@ const SingUp = () => {
           </form>
           
           <p className="mt-5">
-            Already have an account ? <span>Sing In</span>
+            Already have an account ? <Link className="text-[#EA6C00] text-lg font-bold" to={'/singin'}>Sing In</Link>
           </p>
         </div>
       </div>

@@ -4,6 +4,7 @@ import image from "../../../public/image.jpg"
 import './singin.css'
 import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { getDatabase, ref, set } from "firebase/database";
+import { Link } from 'react-router';
 
 
 
@@ -93,6 +94,7 @@ function Singin() {
           Login to Continue
           </button>
         </div>
+        <p className='text-white py-5'>Don’t have an account ? <Link className='text-[#EA6C00] text-lg font-bold'to={'/singup'}>Sign up</Link></p>
       </form>
     </div>
   </div>
