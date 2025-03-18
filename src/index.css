@@ -1,1 +1,24 @@
 @import "tailwindcss";
+
+.active{
+    background-color: red;
+    width: 90%;
+    display: flex;
+    justify-content: center;
+    padding: 10px 0px;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+    position: relative;
+}
+
+.active::after{
+    position: absolute;
+    content: "";
+    right: 0px;
+    top: 0px;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    height: 100%;
+    width: 20px;
+    background-color: #5F35F5;
+}

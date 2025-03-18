@@ -3,6 +3,7 @@ import { IoMdNotificationsOutline } from 'react-icons/io'
 import { IoCloudUploadOutline, IoHomeOutline, IoSettingsOutline } from 'react-icons/io5'
 import { LuMessageCircleMore } from 'react-icons/lu'
 import { MdLogout } from 'react-icons/md'
+import { Link } from 'react-router'
 
 function Sidebar() {
   const navigation = [
@@ -35,7 +36,7 @@ function Sidebar() {
   return (
     <div>
         <div>
-        <div className="w-[10%] h-[93vh] rounded-2xl bg-[#5F35F5]">
+        <div className="w-[100px] bg-[#5F35F5]">
          <div className='flex justify-center items-center'>
          <div className='w-[70px] mt-10 h-[70px] rounded-full relative cursor-pointer group'>
             <picture>
@@ -47,9 +48,11 @@ function Sidebar() {
         </div>
           <div className='flex flex-col items-center gap-y-10 justify-center mt-10'>
                {
-                navigation.map((item)=>(
-                  <span className='text-white text-[50px]'key={item.icon}>{item.icon}
-            </span>
+                navigation.map((item, index)=>(
+                  navigation.length -1 == index ? (<Link className='text-white active mt-12 text-[50px]'key={item.icon}>{item.icon}
+            </Link>) : (<Link className='text-white text-[50px]'key={item.icon}>{item.icon}
+              </Link>)
+                  
                 ))
                }
           <div>
