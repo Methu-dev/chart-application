@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 .active{
-    background-color: red;
+    background-color: rgb(209, 117, 117);
     width: 90%;
     display: flex;
     justify-content: center;
@@ -20,5 +20,5 @@
     border-bottom-left-radius: 10px;
     height: 100%;
     width: 20px;
-    background-color: #5F35F5;
+    background-color: red;
 }

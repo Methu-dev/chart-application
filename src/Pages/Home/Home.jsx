@@ -1,13 +1,10 @@
 import React from 'react'
-import Sidebar from '../../Components/HomeComponent/Sidebar'
+import Grouplist from '../../Components/HomeComponent/Grouplist'
 
 function Home() {
   return (
-    <div className='flex justify-between'>
-        <Sidebar />
-        <div className='w-full bg-amber-200'>
-           
-        </div>
+    <div className='w-[30%]'>
+        <Grouplist />
     </div>
   )
 }
