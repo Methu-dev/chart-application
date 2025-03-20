@@ -6,7 +6,7 @@ function Rootlayotu() {
   return (
     <div className='flex gap-x-[30px] p-3'>
         <Sidebar />
-        <div className='w-full rounded-3xl h-[96dvh] bg-amber-200'>
+        <div className='w-full rounded-3xl h-[96dvh] shadow-2xl bg-gray-100'>
            <Outlet />
         </div>
     </div>
