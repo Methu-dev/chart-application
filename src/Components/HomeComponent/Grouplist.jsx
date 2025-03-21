@@ -6,7 +6,7 @@ function Grouplist() {
   const [arrlenght, setArrLenght] = useState(10);
   return (
     <div>
-      <div className="max-w-md mx-auto">
+      <div className="max-w-md mx-auto mt-4">
         <div class="relative">
           <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
             <svg
