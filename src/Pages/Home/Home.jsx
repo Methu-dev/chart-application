@@ -3,6 +3,8 @@ import Grouplist from '../../Components/HomeComponent/Grouplist'
 import Friends from '../../Components/HomeComponent/Friends'
 import UserList from '../../Components/HomeComponent/UserList'
 import FriendRequest from '../../Components/HomeComponent/FriendRequest'
+import Group from '../../Components/HomeComponent/Group'
+import BlockedUser from '../../Components/HomeComponent/BlockedUser'
 
 function Home() {
   return (
@@ -21,6 +23,14 @@ function Home() {
 
     <div className='w-[400px] bg-amber-400'>
     <FriendRequest />
+    </div>
+
+    <div className='w-[400px] bg-amber-400'>
+    <Group />
+    </div>
+
+    <div className='w-[400px] bg-amber-400'>
+    <BlockedUser />
     </div>
     </div>
     

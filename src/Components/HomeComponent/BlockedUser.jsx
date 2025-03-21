@@ -2,14 +2,14 @@ import React, { useState } from "react";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import Avatar from "../../assets/avatar/home-icon.gif";
 
-function Group() {
+function BlockedUser() {
   const [arrlenght, setArrLenght] = useState(10);
   return (
     <div>     
       {/* Grouplist */}
       <div className="flex items-center justify-between pt-6">
         <h1 className="relative">
-        Kiran
+        Blocked Users
           <span className="absolute right-[-28px] top-0 flex items-center w-5 h-5 rounded-full bg-green-300">
             {arrlenght}
           </span>
@@ -37,10 +37,15 @@ function Group() {
               </picture>
             </div>
             <div className="">
-              <h1 className="text-[18px] font-semibold">Kiran</h1>
-              <p className="text-sm ">Hi Methu!</p>
+              <h1 className="text-[18px] font-semibold">Tejeshwini C</h1>
+              <p className="text-sm ">Today, 12:22pm</p>
             </div>
-            <p>Today, 2:31pm</p>
+            <button
+              type="button"
+              class="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 cursor-pointer"
+            >
+              unblock
+            </button>
           </div>
         ))}
       </div>
@@ -48,4 +53,4 @@ function Group() {
   );
 }
 
-export default Group;
+export default BlockedUser;
