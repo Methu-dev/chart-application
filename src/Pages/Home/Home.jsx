@@ -8,28 +8,28 @@ import BlockedUser from '../../Components/HomeComponent/BlockedUser'
 
 function Home() {
   return (
-    <div className='flex justify-between flex-wrap'>
+    <div className='flex justify-between flex-wrap gap-y-2'>
       <div className='w-[400px] px-3 bg-amber-400'>
         <Grouplist />
     </div>
 
-    <div className='w-[400px] bg-amber-400'>
+    <div className='w-[400px]'>
     <Friends />
     </div>
 
-    <div className='w-[400px] bg-amber-400'>
+    <div className='w-[400px]'>
     <UserList />
     </div>
 
-    <div className='w-[400px] bg-amber-400'>
+    <div className='w-[400px]'>
     <FriendRequest />
     </div>
 
-    <div className='w-[400px] bg-amber-400'>
+    <div className='w-[400px]'>
     <Group />
     </div>
 
-    <div className='w-[400px] bg-amber-400'>
+    <div className='w-[400px]'>
     <BlockedUser />
     </div>
     </div>

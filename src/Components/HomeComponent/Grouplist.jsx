@@ -46,7 +46,7 @@ function Grouplist() {
           <HiOutlineDotsVertical />
         </span>
       </div>
-      <div className="overflow-y-scroll h-[50dvh]">
+      <div className="overflow-y-scroll h-[40dvh]">
         {[...new Array(arrlenght)].map((_, index) => (
           <div
             className={
