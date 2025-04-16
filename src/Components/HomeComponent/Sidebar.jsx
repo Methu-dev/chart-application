@@ -1,13 +1,17 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { IoMdNotificationsOutline } from 'react-icons/io'
 import { IoCloudUploadOutline, IoHomeOutline, IoSettingsOutline } from 'react-icons/io5'
 import { LuMessageCircleMore } from 'react-icons/lu'
 import { MdLogout } from 'react-icons/md'
 import { useLocation, useNavigate } from 'react-router'
+import { getDatabase, ref, onValue } from "firebase/database";
+
 
 function Sidebar() {
+  const db = getDatabase();
   const location = useLocation()
   const navigate = useNavigate()
+  const [userdata, setuserdata] = useState([])
 
   const navigation = [
     { icon: <IoHomeOutline />, path: "/" },
@@ -53,6 +57,26 @@ const handleProfileBtn = ()=>{
     throw new Error("upload faild")
   }
 }
+
+/**
+ * fetch the data to the firebase realtime database
+ */
+useEffect(() =>{
+  const fetchData = () =>{
+    const userRef = ref(db, 'users/');
+    onValue(userRef, (snapshot) => {
+      let userArr = []
+      snapshot.forEach((item)=> {
+        userArr.push({...item.val(), userKey: item.key});
+      })
+      setuserdata(userArr)
+      
+    });
+  };
+  fetchData()
+},[]);
+console.log(userdata);
+
 
   return (
     <div className="w-[100px] h-[96dvh] rounded-3xl bg-[#5F35F5] flex flex-col justify-between items-center py-10">
