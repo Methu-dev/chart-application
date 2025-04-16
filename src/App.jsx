@@ -4,6 +4,7 @@ import Singin from './Pages/SingIn/Singin';
 import SingUp from './Pages/Index';
 import Home from './Pages/Home/Home';
 import Rootlayotu from './Components/RootLayout/Rootlayotu';
+import Chat from './Pages/Chat/Chat';
 
 function App() {
   return (
@@ -12,7 +13,7 @@ function App() {
     
     <Route path="/" element={<Rootlayotu />} >
     <Route index element={<Home />}></Route>
-    <Route path='/message' element={"this is message page"}></Route>
+    <Route path='/message' element={<Chat />}></Route>
     <Route path='/notification' element={"this is notification page"}></Route>
     <Route path='/setting' element={"this is setting"}></Route>
     </Route>

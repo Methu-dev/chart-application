@@ -4,13 +4,14 @@ import image from "../../../public/image.jpg"
 import './singin.css'
 import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { getDatabase, ref, set } from "firebase/database";
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 
 
 
 function Singin() {
     const auth = getAuth();
     const database = getDatabase();
+    const navigate = useNavigate();
     const [loginInfo, setLoginInfo]= useState({
         email: "",
         password: ""      
@@ -33,7 +34,7 @@ function Singin() {
     const handleBtn = ()=>{
         const {email, password} = loginInfo;
         signInWithEmailAndPassword(auth, email,password).then((info)=>{
-            console.log(info)
+            navigate("/");
             
         })
         .catch((err)=>{

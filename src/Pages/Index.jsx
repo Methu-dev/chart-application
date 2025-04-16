@@ -12,8 +12,10 @@ import { FaRegEye } from "react-icons/fa";
 import { FaEyeLowVision } from "react-icons/fa6";
 import myimage from "../../public/images.png"
 import { Link } from "react-router";
+import { getDatabase, ref, set, push} from "firebase/database";
 
 const SingUp = () => {
+  const db = getDatabase();
   const auth = getAuth();
   const { SucessToast, ErorrToast, InfoToast } = libaray;
   const data = lib.singUpdata();
@@ -69,7 +71,6 @@ const SingUp = () => {
       createUserWithEmailAndPassword(auth, email, password)
         .then((userInfo) => {
           SucessToast("registration secessfull");
-
           updateProfile(auth.currentUser, {
             displayName: fullName,
             photoURL:
@@ -77,6 +78,13 @@ const SingUp = () => {
           });
         })
         .then(() => {
+          const userdb = ref(db, "users/");
+          set(push(userdb), {
+            userid: auth.currentUser.uid,
+            username: auth.currentUser.displayName || fullName,
+            email: auth.currentUser.email || email,
+            profile_picture : auth.currentUser.photoURL || 'https://images.pexels.com/photos/9072343/pexels-photo-9072343.jpeg?auto=compress&cs=tinysrgb&w=600'
+          });
           // send email for authenticate user
           return sendEmailVerification(auth.currentUser);
         })
