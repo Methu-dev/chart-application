@@ -47,15 +47,12 @@ function Singin() {
     const handleGoogle = ()=>{
         const provider = new GoogleAuthProvider();
         signInWithPopup(auth, provider).then((userInfo)=>{
-          console.log(userInfo);
-          const {user} = userInfo
-
             const userdb = ref(db, "users/");
                       set(push(userdb), {
-                        userid: user.uid,
-                        username: user.displayName || "name missing",
-                        email: user.email || email,
-                        profile_picture : user.photoURL || 'https://images.pexels.com/photos/9072343/pexels-photo-9072343.jpeg?auto=compress&cs=tinysrgb&w=600'
+                        userid: userInfo?.user?.uid,
+                        username: userInfo?.user?.displayName,
+                        email: userInfo?.user?.email,
+                        profile_picture : userInfo?.user?.photoURL || 'https://images.pexels.com/photos/9072343/pexels-photo-9072343.jpeg?auto=compress&cs=tinysrgb&w=600'
                       });
             
         }).then(()=>{

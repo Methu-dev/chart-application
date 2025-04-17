@@ -65,7 +65,10 @@ function Sidebar() {
           if (error) {
             throw new Error("coudinary profile picture upload error");
           }
-          console.log(result.data);
+          if(result.info.secure_url) {
+            console.log(result.info.secure_url);
+          }
+          
         }
       );
     } else {

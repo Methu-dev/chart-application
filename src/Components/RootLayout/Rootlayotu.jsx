@@ -1,22 +1,20 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "../HomeComponent/Sidebar";
 import { Outlet } from "react-router";
-import { getAuth } from "firebase/auth";
 import Usernotfound from "../../Pages/Error/Usernotfound";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 function Rootlayotu() {
   const auth = getAuth();
   const [userVerified, setuserVerifed] = useState(false)
-
   useEffect(()=>{
-    if(auth?.currentUser?.emailVerified){
-      setuserVerifed(auth?.currentUser?.emailVerified || true);
-    } else{
-      setuserVerifed(auth?.currentUser?.emailVerified || false);
-    }
-  },[]);
-  let content = null;
+    onAuthStateChanged(auth, (user) => {
+      console.log(user.emailVerified);
+      setuserVerifed(user.emailVerified)
+    });
+  },[])
 
+  let content = null;
 if(userVerified){
   content(
 <div className="flex gap-x-[30px] p-3">
