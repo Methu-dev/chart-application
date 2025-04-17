@@ -3,14 +3,14 @@ import { FcGoogle } from 'react-icons/fc'
 import image from "../../../public/image.jpg"
 import './singin.css'
 import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import { getDatabase, ref, set } from "firebase/database";
+import { getDatabase, ref, set, push } from "firebase/database";
 import { Link, useNavigate } from 'react-router';
 
 
 
 function Singin() {
     const auth = getAuth();
-    const database = getDatabase();
+    const db = getDatabase();
     const navigate = useNavigate();
     const [loginInfo, setLoginInfo]= useState({
         email: "",
@@ -47,14 +47,19 @@ function Singin() {
     const handleGoogle = ()=>{
         const provider = new GoogleAuthProvider();
         signInWithPopup(auth, provider).then((userInfo)=>{
+          console.log(userInfo);
+          const {user} = userInfo
+
+            const userdb = ref(db, "users/");
+                      set(push(userdb), {
+                        userid: user.uid,
+                        username: user.displayName || "name missing",
+                        email: user.email || email,
+                        profile_picture : user.photoURL || 'https://images.pexels.com/photos/9072343/pexels-photo-9072343.jpeg?auto=compress&cs=tinysrgb&w=600'
+                      });
             
-            console.log(userInfo);
-            set(ref(database, 'users/'), {
-                username: "mehtu",
-                email: "methu@gmail.com",
-                profile_picture : "imageUrl"
-              });
-            
+        }).then(()=>{
+          navigate("/")
         })
         .catch((err)=>{
             console.error("fix it error")

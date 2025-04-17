@@ -1,16 +1,41 @@
-import React from 'react'
-import Sidebar from '../HomeComponent/Sidebar'
-import { Outlet } from 'react-router'
+import React, { useEffect, useState } from "react";
+import Sidebar from "../HomeComponent/Sidebar";
+import { Outlet } from "react-router";
+import { getAuth } from "firebase/auth";
+import Usernotfound from "../../Pages/Error/Usernotfound";
 
 function Rootlayotu() {
-  return (
-    <div className='flex gap-x-[30px] p-3'>
-        <Sidebar />
-        <div className='w-full rounded-3xl h-[96dvh] shadow-2xl bg-gray-100'>
-           <Outlet />
-        </div>
+  const auth = getAuth();
+  const [userVerified, setuserVerifed] = useState(false)
+
+  useEffect(()=>{
+    if(auth?.currentUser?.emailVerified){
+      setuserVerifed(auth?.currentUser?.emailVerified || true);
+    } else{
+      setuserVerifed(auth?.currentUser?.emailVerified || false);
+    }
+  },[]);
+  let content = null;
+
+if(userVerified){
+  content(
+<div className="flex gap-x-[30px] p-3">
+      <Sidebar />
+      <div className="w-full rounded-3xl h-[96dvh] shadow-2xl bg-gray-100">
+        <Outlet />
+      </div>
     </div>
   )
+}else{
+  content = (
+    <span> User not found </span>
+  )
+}
+return(
+  <>
+  <Usernotfound />
+  </>
+)
 }
 
-export default Rootlayotu
+export default Rootlayotu;
