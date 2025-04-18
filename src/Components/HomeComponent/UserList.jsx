@@ -1,10 +1,30 @@
-import React, { useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import Avatar from "../../assets/avatar/home-icon.gif";
 import { FaPlus } from "react-icons/fa";
+import { getDatabase, ref, onValue } from "firebase/database";
 
 function UserList() {
+  const db = getDatabase();
   const [arrlenght, setArrLenght] = useState(10);
+  const [userlist, setUserlist] = useState([])
+  useEffect(()=>{
+    const userRef = ref(db, 'users');
+    let userBlankArr = []
+onValue(userRef, (snapshot) => {
+  snapshot.forEach((user)=>{
+    userBlankArr.push({...user.val(), userkey: user.key})
+    
+  })
+  setUserlist(userBlankArr)
+});
+//cleanup funtion
+return () => {
+  const userRef = ref(db, 'users');
+}
+  }, [])
+  console.log(userlist);
+  
   return (
     <div>
       {/* Grouplist */}
@@ -20,7 +40,7 @@ function UserList() {
         </span>
       </div>
       <div className="overflow-y-scroll h-[50dvh] scrollbar ">
-        {[...new Array(arrlenght)].map((_, index) => (
+        {userlist?.map((user, index) => (
           <div
             className={
               arrlenght - 1 === index
