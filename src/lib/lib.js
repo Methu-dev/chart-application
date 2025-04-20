@@ -1,4 +1,5 @@
 import { toast,Bounce } from "react-toastify";
+import moment from "moment";
 
 const _ = {};
 _.singUpdata = ()=>{
@@ -59,6 +60,10 @@ _.InfoToast =(msg= "info missing")=>{
         theme: "colored",
         transition: Bounce,
         });
+};
+
+_.getTimeNow = ()=>{
+ return   moment().format("DD MM YYYY hh:mm:ss")
 }
 
 export default _;

@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import Avatar from "../../assets/avatar/home-icon.gif";
 import { FaPlus } from "react-icons/fa";
-import { getDatabase, ref, onValue, set  } from "firebase/database";
+import { getDatabase, ref, onValue, set, push  } from "firebase/database";
 import { getAuth } from "firebase/auth";
-
+import lib from '../../lib/lib'
 function UserList() {
   const db = getDatabase();
   const auth = getAuth();
@@ -34,16 +34,22 @@ const [currentUser, serCurrentUser] = useState({});
 
   //handleFriendRequest function
   const handleFriendRequest = (user)=>{
-    set(ref(db, 'FriendRequest'), {
+    set(push(ref(db, 'FriendRequest')), {
       whoSendFrdName : currentUser?.username || auth?.currentUser?.displayName,
       whoSendFrUid : currentUser?.userid || auth?.currentUser?.uid,
       whoSendFRemail : currentUser?.userid || auth?.currentUser?.email,
       whoSendFrprofile_picture : currentUser?.profile_picture || auth?.currentUser?.photoURL,
-      whoSendFRUserrKey : currentUser?.userkey || null
+      whoSendFRUserrKey : user?.userkey || "",
+      whoRVFrname : user?.username || "",
+      whoRVfrUid : user?.userid || "",
+      whoRVfrUserKey : user?.userkey || "",
+      whoRVfrProfile_picture : user?.profile_picture || "",
+      whoRVfremail : user?.email ||"",
+      createdAt : lib.getTimeNow()
     });
   
   }
-console.log(auth.currentUser)
+
 
   return (
     <div>
