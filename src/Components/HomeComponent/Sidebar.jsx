@@ -8,13 +8,15 @@ import {
 import { LuMessageCircleMore } from "react-icons/lu";
 import { MdLogout } from "react-icons/md";
 import { useLocation, useNavigate } from "react-router";
-import { getDatabase, ref, onValue } from "firebase/database";
+import { getDatabase, ref, onValue, update } from "firebase/database";
+import { getAuth } from "firebase/auth";
 
 function Sidebar() {
+  const auth = getAuth();
   const db = getDatabase();
   const location = useLocation();
   const navigate = useNavigate();
-  const [userdata, setuserdata] = useState([]);
+  const [userdata, setuserdata] = useState({});
 
   const navigation = [
     { icon: <IoHomeOutline />, path: "/" },
@@ -67,6 +69,9 @@ function Sidebar() {
           }
           if(result.info.secure_url) {
             console.log(result.info.secure_url);
+            update(ref(db , `users/${userdata.userKey}`), {
+              profile_picture:result.info.secure_url
+            })
           }
           
         }
@@ -83,11 +88,12 @@ function Sidebar() {
     const fetchData = () => {
       const userRef = ref(db, "users/");
       onValue(userRef, (snapshot) => {
-        let userArr = [];
+        let obj = {}; 
         snapshot.forEach((item) => {
-          userArr.push({ ...item.val(), userKey: item.key });
+          if(auth.currentUser.uid === item.val().userid)
+          obj = { ...item.val(), userKey: item.key }
         });
-        setuserdata(userArr);
+        setuserdata(obj);
       });
     };
     fetchData();
@@ -98,7 +104,8 @@ function Sidebar() {
       {/* Profile Image */}
       <div className="w-[70px] h-[70px] rounded-full relative cursor-pointer group">
         <img
-          src="https://i.ibb.co.com/JRyz8B3Y/IMG-6210.jpg"
+          src= {userdata?.
+            profile_picture || "https://i.ibb.co.com/JRyz8B3Y/IMG-6210.jpg"}
           alt="profile"
           className="w-full h-full object-cover rounded-full"
         />
@@ -109,7 +116,7 @@ function Sidebar() {
           <IoCloudUploadOutline />
         </span>
       </div>
-
+        <h1>{userdata?.username}</h1>
       {/* Navigation Icons with big active highlight */}
       <div className="flex flex-col items-center gap-y-8 mt-10">
         {navigation.map((item, index) => {
