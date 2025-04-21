@@ -42,14 +42,14 @@ function UserList() {
       });
       setFriendRequest(FrBlankArr)
     });
-console.log("sathi",FriendRequest);
+
 
     // cleanup function 
     return () => {
       off(FrRRef);
     };
   }, []);
-
+  console.log("sathi",FriendRequest);
   //handleFriendRequest function
   const handleFriendRequest = (user) => {
     set(push(ref(db, "FriendRequest")), {
@@ -147,22 +147,20 @@ console.log("sathi",FriendRequest);
                   <h1 className="text-[18px] font-semibold">{user.username}</h1>
                   <p className="text-sm">{user.email || "missing"}</p>
                 </div>
-                {currentUser?.userid + user.userid == senderRecivedId?.id ? (
-                  <button
+           {FriendRequest?.includes(auth?.currentUser?.uid + user.userid) ? <button
                     type="button"
                     className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 cursor-pointer"
                   >
                     <FaMinus />
-                  </button>
-                ) : (
+                  </button> :
+                  
                   <button
                     type="button"
                     onClick={() => handleFriendRequest(user)}
                     className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 cursor-pointer"
                   >
                     <FaPlus />
-                  </button>
-                )}
+                  </button>}
               </div>
             ))}
       </div>

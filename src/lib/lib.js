@@ -62,9 +62,8 @@ _.InfoToast =(msg= "info missing")=>{
         });
 };
 
-_.getTimeNow = ()=>{
- return moment().format("DD MM YYYY hh:mm:ss")
- 
-}
+_.getTimeNow = () => {
+    return new Date().toISOString(); 
+  }
 
 export default _;

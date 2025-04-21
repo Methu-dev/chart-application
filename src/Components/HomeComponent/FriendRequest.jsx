@@ -3,11 +3,12 @@ import { HiOutlineDotsVertical } from "react-icons/hi";
 import Avatar from "../../assets/avatar/home-icon.gif";
 import { getDatabase, ref, onValue } from "firebase/database";
 import { getAuth } from "firebase/auth";
+import moment from "moment";
 
 function FriendRequest() {
   const db = getDatabase();
   const auth = getAuth();
-  const [FrList, setFrList] = useState([]);
+  const [frList, setFrList] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -16,7 +17,6 @@ function FriendRequest() {
       const FrBlankArr = [];
       snapshot.forEach((item) => {
         const request = item.val();
-        // Only show friend requests that are for the current user
         if (request.whoRVfrUid === auth.currentUser?.uid) {
           FrBlankArr.push({ ...request, id: item.key });
         }
@@ -24,18 +24,20 @@ function FriendRequest() {
       setFrList(FrBlankArr);
       setLoading(false);
     });
-
-    return () => unsubscribe(); // cleanup
+  
+    return () => unsubscribe(); // ✅ Proper cleanup
   }, []);
+  
+  
 
   return (
     <div>
       {/* Header */}
       <div className="flex items-center justify-between pt-6">
-        <h1 className="relative">
+        <h1 className="relative font-bold text-lg">
           Friend Request
-          <span className="absolute right-[-28px] top-0 flex items-center justify-center w-5 h-5 rounded-full bg-green-300 text-xs">
-            {FrList.length}
+          <span className="absolute -right-7 top-0 flex items-center justify-center w-5 h-5 rounded-full bg-green-300 text-xs">
+            {frList.length}
           </span>
         </h1>
         <span>
@@ -43,8 +45,10 @@ function FriendRequest() {
         </span>
       </div>
 
-      <div className="overflow-y-scroll h-[50dvh] scrollbar mt-4">
+      {/* Friend Request List */}
+      <div className="overflow-y-scroll h-[50dvh] scrollbar mt-4 pr-2">
         {loading ? (
+          // Skeleton loading
           [...Array(5)].map((_, index) => (
             <div
               key={index}
@@ -58,28 +62,30 @@ function FriendRequest() {
               <div className="w-10 h-10 bg-green-200 rounded-lg"></div>
             </div>
           ))
-        ) : FrList.length === 0 ? (
+        ) : frList.length === 0 ? (
           <p className="text-center mt-5 text-gray-400">No friend requests yet.</p>
         ) : (
-          FrList.map((user, index) => (
+          frList.map((user, index) => (
             <div
               key={user.id}
               className={`flex items-center justify-between pt-3 pb-2 border-b ${
-                FrList.length - 1 === index ? "" : "border-b-[#000000]"
+                frList.length - 1 === index ? "" : "border-b-[#000000]"
               }`}
             >
               <div className="w-[50px] h-[50px]">
                 <img
                   src={user.whoSendFrprofile_picture || Avatar}
                   alt="Profile"
-                  className="w-full h-full rounded-full"
+                  className="w-full h-full rounded-full object-cover"
                 />
               </div>
-              <div>
+              <div className="flex-1 ml-3">
                 <h1 className="text-[18px] font-semibold">
                   {user.whoSendFrdName}
                 </h1>
-                <p className="text-sm">{user.whoSendFRemail}</p>
+                <p className="text-sm text-gray-600">
+                  {moment(user.createdAt).fromNow()}
+                </p>
               </div>
               <button
                 type="button"
