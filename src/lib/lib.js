@@ -63,7 +63,8 @@ _.InfoToast =(msg= "info missing")=>{
 };
 
 _.getTimeNow = ()=>{
- return   moment().format("DD MM YYYY hh:mm:ss")
+ return moment().format("DD MM YYYY hh:mm:ss")
+ 
 }
 
 export default _;

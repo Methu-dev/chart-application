@@ -38,7 +38,6 @@ function Sidebar() {
     const scrict = document.createElement("script");
     scrict.src = "https://upload-widget.cloudinary.com/latest/global/all.js";
     scrict.async = true;
-    console.log(scrict);
     document.body.appendChild(scrict);
   }, []);
 
@@ -98,7 +97,6 @@ function Sidebar() {
     };
     fetchData();
   }, []);
-  console.log(userdata);
   return (
     <div className="w-[100px] h-[96dvh] rounded-3xl bg-[#5F35F5] flex flex-col justify-between items-center py-10">
       {/* Profile Image */}
