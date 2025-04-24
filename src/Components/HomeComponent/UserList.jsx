@@ -49,7 +49,6 @@ function UserList() {
       off(FrRRef);
     };
   }, []);
-  console.log("sathi",FriendRequest);
   //handleFriendRequest function
   const handleFriendRequest = (user) => {
     set(push(ref(db, "FriendRequest")), {

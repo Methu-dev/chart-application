@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import Avatar from "../../assets/avatar/home-icon.gif";
-import { getDatabase, ref, onValue } from "firebase/database";
+import { getDatabase, ref, onValue, push, remove } from "firebase/database";
 import { getAuth } from "firebase/auth";
 import moment from "moment";
+import lib from '../../lib/lib';
+
+
 
 function FriendRequest() {
   const db = getDatabase();
@@ -28,8 +31,35 @@ function FriendRequest() {
     return () => unsubscribe(); // ✅ Proper cleanup
   }, []);
   
+  // handleAcceptFriendRequest function
+  const handleAcceptFriendRequest = (friendRIfo) => {
+    const friendsRef = ref(db, "Friends/");
+    const notificationRef = ref(db, "notification/");
+    const requestRef = ref(db, `FriendRequest/${friendRIfo.id}`);
   
-
+    // First: push to Friends
+    push(friendsRef, {
+      ...friendRIfo,
+      createdAt: lib.getTimeNow(),
+    })
+      .then(() => {
+        // Then: push to Notification
+        return push(notificationRef, {
+          notificationMsg: `${friendRIfo.whoSendFrdName} accepted your friend request.`,
+          createdAt: lib.getTimeNow(),
+        });
+      })
+      .then(() => {
+        // Then: remove the request
+        return remove(requestRef);
+      })
+      .then(() => {
+        lib.SucessToast(`${friendRIfo.whoSendFrdName} added as friend`);
+      })
+      .catch((err) => {
+        console.error("Error from accept friendRequest", err);
+      });
+  };
   return (
     <div>
       {/* Header */}
@@ -65,7 +95,7 @@ function FriendRequest() {
         ) : frList.length === 0 ? (
           <p className="text-center mt-5 text-gray-400">No friend requests yet.</p>
         ) : (
-          frList.map((user, index) => (
+          frList?.map((user, index) => (
             <div
               key={user.id}
               className={`flex items-center justify-between pt-3 pb-2 border-b ${
@@ -87,12 +117,21 @@ function FriendRequest() {
                   {moment(user.createdAt).fromNow()}
                 </p>
               </div>
+              <div>
               <button
                 type="button"
-                className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 cursor-pointer"
+                className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 cursor-pointer"onClick={()=>handleAcceptFriendRequest(user)}
+
               >
                 Accept
               </button>
+              <button
+                type="button"
+                className="focus:outline-none text-white bg-red-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 cursor-pointer"
+              >
+                Reject
+              </button>
+              </div>
             </div>
           ))
         )}
