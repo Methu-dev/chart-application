@@ -36,7 +36,6 @@ function Friends({ onFriendSelect }) {
     setactive((prev)=>{
       return !prev;   
     });
-    return;
     push(ref(db, "blocklist/"), {
       ...frInfo,
       createdAt: lib.getTimeNow(),
@@ -99,12 +98,18 @@ function Friends({ onFriendSelect }) {
                 >
                   Unfriend
                 </button>
-                <button
+                {active ? <button
+                  className="bg-red-600 text-white px-3 py-1 cursor-pointer rounded hover:bg-green-700 text-sm"
+                  onClick={() => handleBlock(item)}
+                >
+                  Blocked
+                </button> : <button
                   className="bg-red-600 text-white px-3 py-1 cursor-pointer rounded hover:bg-green-700 text-sm"
                   onClick={() => handleBlock(item)}
                 >
                   Block
-                </button>
+                </button>}
+                
               </div>
             </div>
           ))
