@@ -1,15 +1,47 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import Avatar from "../../assets/avatar/home-icon.gif";
+import {
+  getDatabase,
+  ref,
+  onValue,
+  push,
+  remove,
+  off,
+} from "firebase/database";
+import { getAuth } from "firebase/auth";
+import lib from "../../lib/lib";
+import moment from "moment";
 
 function BlockedUser() {
+  const db = getDatabase();
+  const auth = getAuth();
   const [arrlenght, setArrLenght] = useState(10);
+  const [friends, setFriends] = useState([]);
+
+  // fetch block data
+  useEffect(() => {
+    const frRef = ref(db, "blocklist/");
+    onValue(frRef, (snapshot) => {
+      const arr = [];
+      snapshot.forEach((block) => {
+        if (auth?.currentUser.uid == block?.val().whoRVfrUid)
+          arr.push({ ...block?.val(), blockKey: block?.key });
+      });
+      setFriends(arr);
+    });
+
+    return () => {
+      off(frRef);
+    };
+  }, []);
+
   return (
-    <div>     
+    <div>
       {/* Grouplist */}
       <div className="flex items-center justify-between pt-6">
         <h1 className="relative">
-        Blocked Users
+          Blocked List
           <span className="absolute right-[-28px] top-0 flex items-center w-5 h-5 rounded-full bg-green-300">
             {arrlenght}
           </span>
@@ -19,7 +51,7 @@ function BlockedUser() {
         </span>
       </div>
       <div className="overflow-y-scroll h-[50dvh]">
-        {[...new Array(arrlenght)].map((_, index) => (
+        {friends.map((blockUser, index) => (
           <div
             className={
               arrlenght - 1 === index
@@ -30,15 +62,19 @@ function BlockedUser() {
             <div className="w-[50px] h-[50px]">
               <picture>
                 <img
-                  src={Avatar}
+                  src={blockUser.whoSendFrprofile_picture || Avatar}
                   alt={Avatar}
                   className="w-full h-full rounded-full"
                 />
               </picture>
             </div>
             <div className="">
-              <h1 className="text-[18px] font-semibold">Tejeshwini C</h1>
-              <p className="text-sm ">Today, 12:22pm</p>
+              <h1 className="text-[18px] font-semibold">
+                {blockUser.whoSendFrdName}
+              </h1>
+              <p className="text-sm ">
+                {moment(blockUser.createdAt).fromNow()}
+              </p>
             </div>
             <button
               type="button"

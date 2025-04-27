@@ -2,17 +2,18 @@
 import React, { useEffect, useState } from "react";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import Avatar from "../../assets/avatar/home-icon.gif";
-import { getDatabase, ref, onValue, push, remove } from "firebase/database";
+import { getDatabase, ref, onValue, push, remove, off } from "firebase/database";
 import { getAuth } from "firebase/auth";
 import moment from "moment";
-import lib from "../../lib/lib"
+import lib from "../../lib/lib";
 
 function Friends({ onFriendSelect }) {
   const [friends, setFriends] = useState([]);
   const db = getDatabase();
   const auth = getAuth();
   const [active, setactive] = useState(false);
- 
+  const [blockUser, setblockUser] = useState([]);
+
   useEffect(() => {
     const frRef = ref(db, "Friends/");
     const unsubscribe = onValue(frRef, (snapshot) => {
@@ -31,24 +32,48 @@ function Friends({ onFriendSelect }) {
 
     return () => unsubscribe();
   }, []);
+
+  // fetch block data
+  useEffect(() => {
+    const FrRRef = ref(db, "blocklist");
+    onValue(FrRRef, (snapshot) => {
+      const blockBlankArr = [];
+      snapshot.forEach((block) => {
+       if(auth?.currentUser?.uid == block.val().whoRVfrUid){
+        blockBlankArr.push(auth.currentUser.uid.concat(block.val().whoSendFrUid
+      ));
+       }
+        
+      });
+      setblockUser(blockBlankArr);
+    });
+
+    // cleanup function
+    return () => {
+      off(FrRRef);
+    };
+  }, []);
+  
+
   // handleBlock function
   const handleBlock = (frInfo = {}) => {
-    setactive((prev)=>{
-      return !prev;   
-    });
+
     push(ref(db, "blocklist/"), {
       ...frInfo,
       createdAt: lib.getTimeNow(),
     })
-    .then(() => {
-      lib.SucessToast(`${frInfo.whoSendFrdName} has been blocked.`);
-    })
-    .catch((error) => {
-      console.error("Block Error:", error);
-    });
-  }
-  console.log(active);
-  
+      .then(() => {
+        lib.SucessToast(`${frInfo.whoSendFrdName} has been blocked.`);
+      }).then(() => {
+        const friendRef = ref(db, `Friends/${frInfo.id}`);
+        remove(friendRef);
+      })
+      
+      .catch((error) => {
+        console.error("Block Error:", error);
+      });
+  };
+
   return (
     <div>
       {/* Header */}
@@ -98,18 +123,24 @@ function Friends({ onFriendSelect }) {
                 >
                   Unfriend
                 </button>
-                {active ? <button
-                  className="bg-red-600 text-white px-3 py-1 cursor-pointer rounded hover:bg-green-700 text-sm"
-                  onClick={() => handleBlock(item)}
-                >
-                  Blocked
-                </button> : <button
-                  className="bg-red-600 text-white px-3 py-1 cursor-pointer rounded hover:bg-green-700 text-sm"
-                  onClick={() => handleBlock(item)}
-                >
-                  Block
-                </button>}
-                
+
+                {blockUser.includes(
+                  auth.currentUser.uid.concat(item.whoSendFrUid)
+                ) ? (
+                  <button
+                    className="bg-gray-400 text-white px-3 py-1 cursor-not-allowed rounded text-sm"
+                    disabled
+                  >
+                    Unblock
+                  </button>
+                ) : (
+                  <button
+                    className="bg-red-600 text-white px-3 py-1 cursor-pointer rounded hover:bg-red-700 text-sm"
+                    onClick={() => handleBlock(item)}
+                  >
+                    Block
+                  </button>
+                )}
               </div>
             </div>
           ))
