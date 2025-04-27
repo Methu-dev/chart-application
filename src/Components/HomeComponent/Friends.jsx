@@ -2,15 +2,17 @@
 import React, { useEffect, useState } from "react";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import Avatar from "../../assets/avatar/home-icon.gif";
-import { getDatabase, ref, onValue } from "firebase/database";
+import { getDatabase, ref, onValue, push, remove } from "firebase/database";
 import { getAuth } from "firebase/auth";
 import moment from "moment";
+import lib from "../../lib/lib"
 
 function Friends({ onFriendSelect }) {
   const [friends, setFriends] = useState([]);
   const db = getDatabase();
   const auth = getAuth();
-
+  const [active, setactive] = useState(false);
+ 
   useEffect(() => {
     const frRef = ref(db, "Friends/");
     const unsubscribe = onValue(frRef, (snapshot) => {
@@ -29,7 +31,25 @@ function Friends({ onFriendSelect }) {
 
     return () => unsubscribe();
   }, []);
-
+  // handleBlock function
+  const handleBlock = (frInfo = {}) => {
+    setactive((prev)=>{
+      return !prev;   
+    });
+    return;
+    push(ref(db, "blocklist/"), {
+      ...frInfo,
+      createdAt: lib.getTimeNow(),
+    })
+    .then(() => {
+      lib.SucessToast(`${frInfo.whoSendFrdName} has been blocked.`);
+    })
+    .catch((error) => {
+      console.error("Block Error:", error);
+    });
+  }
+  console.log(active);
+  
   return (
     <div>
       {/* Header */}
@@ -72,12 +92,18 @@ function Friends({ onFriendSelect }) {
                   {moment(item.createdAt).fromNow()}
                 </p>
               </div>
-              <div>
+              <div className="flex gap-3">
                 <button
-                  className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 text-sm"
-                  onClick={() => onFriendSelect(item)}
+                  className="bg-blue-600 text-white px-3 py-1 cursor-pointer rounded hover:bg-blue-700 text-sm"
+                  onClick={() => handleUnfriend(item)}
                 >
-                  Message
+                  Unfriend
+                </button>
+                <button
+                  className="bg-red-600 text-white px-3 py-1 cursor-pointer rounded hover:bg-green-700 text-sm"
+                  onClick={() => handleBlock(item)}
+                >
+                  Block
                 </button>
               </div>
             </div>

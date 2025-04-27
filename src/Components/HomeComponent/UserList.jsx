@@ -35,16 +35,17 @@ function UserList() {
   useEffect(() => {
     const FrRRef = ref(db, "FriendRequest");
     onValue(FrRRef, (snapshot) => {
-     const FrBlankArr = [];
+      const FrBlankArr = [];
       snapshot.forEach((FrR) => {
         if (auth.currentUser.uid == FrR.val().whoSendFrUid)
-        FrBlankArr.push(auth?.currentUser?.uid?.concat(FrR.val()?.whoRVfrUid))
+          FrBlankArr.push(
+            auth?.currentUser?.uid?.concat(FrR.val()?.whoRVfrUid)
+          );
       });
-      setFriendRequest(FrBlankArr)
+      setFriendRequest(FrBlankArr);
     });
 
-
-    // cleanup function 
+    // cleanup function
     return () => {
       off(FrRRef);
     };
@@ -113,8 +114,7 @@ function UserList() {
       {/* Body */}
       <div className="overflow-y-scroll h-[50dvh] scrollbar mt-4">
         {loading
-          ? // 🔄 Skeleton Loader
-            [...Array(5)].map((_, index) => (
+          ? [...Array(5)].map((_, index) => (
               <div
                 key={index}
                 className="flex items-center justify-between border-b border-gray-200 pb-3 pt-2 animate-pulse"
@@ -146,20 +146,24 @@ function UserList() {
                   <h1 className="text-[18px] font-semibold">{user.username}</h1>
                   <p className="text-sm">{user.email || "missing"}</p>
                 </div>
-           {FriendRequest?.includes(auth?.currentUser?.uid + user.userid) ? <button
+                {FriendRequest?.includes(
+                  auth?.currentUser?.uid + user.userid
+                ) ? (
+                  <button
                     type="button"
                     className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 cursor-pointer"
                   >
                     <FaMinus />
-                  </button> :
-                  
+                  </button>
+                ) : (
                   <button
                     type="button"
                     onClick={() => handleFriendRequest(user)}
                     className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 cursor-pointer"
                   >
                     <FaPlus />
-                  </button>}
+                  </button>
+                )}
               </div>
             ))}
       </div>
