@@ -27,17 +27,9 @@ function Grouplist() {
   function openModal() {
     setIsOpen(true);
   }
-  //input onchange button function
-  const handleChangeButton = (event) => {
-    const { files, id, value } = event.target;
-    setGroupInfo({
-      ...gorupInfo,
-      [id]: id == "groupImage" ? files[0] : value
-    });
-    validationFiled()
-  };
 
-  const validationFiled = () => {
+   // validate from input 
+   const validationFiled = () => {
     let error = {};
     for (let files in gorupInfo) {
       if (gorupInfo[files] == "") {
@@ -45,9 +37,33 @@ function Grouplist() {
       }
     }
     setGroupErorr(error);
+    return Object.keys(error).length === 0;
   };
+
+
+  //input onchange button function
+  const handleChangeButton = (event) => {
+    const { files, id, value } = event.target;
+    const newValue = id === "groupImage" ? files[0] : value;
+// Update the group info 
+    setGroupInfo((prev) => ({
+      ...prev,
+      [id] : newValue,
+    }));
+    // clear the error for the current field if it hsas a value 
+    setGroupErorr((prevErrors)=>{
+      const newErrors = {...prevErrors};
+      if (newValue !== "") {
+        delete newErrors[`${id}Error`]
+      }
+      return newErrors
+    })
+  };
+
+
   const handleSubmit = () => {
-    validationFiled();
+  const isValid =  validationFiled();
+  if (!isValid) return
   };
 
   function closeModal() {
