@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import Avatar from "../../assets/avatar/home-icon.gif";
 import Modal from "react-modal";
+import { AdvancedImage } from "@cloudinary/react";
+import { getDatabase, ref, set } from "firebase/database";
 
 const customStyles = {
   content: {
@@ -16,20 +18,22 @@ const customStyles = {
 };
 
 function Grouplist() {
+  const db = getDatabase();
+
   const [modalIsOpen, setIsOpen] = useState(false);
   const [arrlenght, setArrLenght] = useState(10);
   const [groupErorr, setGroupErorr] = useState({});
   const [gorupInfo, setGroupInfo] = useState({
     groupTagName: "",
     groupName: "",
-    groupImage: ""
+    groupImage: "",
   });
   function openModal() {
     setIsOpen(true);
   }
 
-   // validate from input 
-   const validationFiled = () => {
+  // validate from input
+  const validationFiled = () => {
     let error = {};
     for (let files in gorupInfo) {
       if (gorupInfo[files] == "") {
@@ -40,30 +44,47 @@ function Grouplist() {
     return Object.keys(error).length === 0;
   };
 
-
   //input onchange button function
   const handleChangeButton = (event) => {
     const { files, id, value } = event.target;
     const newValue = id === "groupImage" ? files[0] : value;
-// Update the group info 
+    // Update the group info
     setGroupInfo((prev) => ({
       ...prev,
-      [id] : newValue,
+      [id]: newValue,
     }));
-    // clear the error for the current field if it hsas a value 
-    setGroupErorr((prevErrors)=>{
-      const newErrors = {...prevErrors};
+    // clear the error for the current field if it hsas a value
+    setGroupErorr((prevErrors) => {
+      const newErrors = { ...prevErrors };
       if (newValue !== "") {
-        delete newErrors[`${id}Error`]
+        delete newErrors[`${id}Error`];
       }
-      return newErrors
-    })
+      return newErrors;
+    });
   };
 
+  const handleSubmit = async () => {
+    const isValid = validationFiled();
+    if (!isValid) return;
 
-  const handleSubmit = () => {
-  const isValid =  validationFiled();
-  if (!isValid) return
+    const formData = new FormData();
+    formData.append("file", gorupInfo.groupImage);
+    formData.append("upload_preset", "chat-application");
+
+    try {
+      const response = await fetch(
+        "https://api.cloudinary.com/v1_1/dmlou4zwt/image/upload",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      const data = await response.json();
+      console.log("secure_url:", data);
+    } catch (error) {
+      console.error("Error uploading image:", error);
+    }
   };
 
   function closeModal() {
@@ -162,7 +183,11 @@ function Grouplist() {
 
           <div class="w-full p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
             <div class="w-full max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700">
-              <form class="space-y-6" action="#" onSubmit={(e)=>e.preventDefault()}>
+              <form
+                class="space-y-6"
+                action="#"
+                onSubmit={(e) => e.preventDefault()}
+              >
                 <div>
                   <label
                     for="groupName"
@@ -178,9 +203,11 @@ function Grouplist() {
                     placeholder="type your group name"
                     required
                   />
-                  {groupErorr.groupNameError && 
-                  <span className="text-red-500">{groupErorr.groupNameError}</span>
-                  }
+                  {groupErorr.groupNameError && (
+                    <span className="text-red-500">
+                      {groupErorr.groupNameError}
+                    </span>
+                  )}
                 </div>
                 <div>
                   <label
@@ -197,26 +224,33 @@ function Grouplist() {
                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                     required
                   />
-                  {groupErorr.groupTagNameError && 
-                  <span className="text-red-500">{groupErorr.groupTagNameError}</span>
-                  }
+                  {groupErorr.groupTagNameError && (
+                    <span className="text-red-500">
+                      {groupErorr.groupTagNameError}
+                    </span>
+                  )}
                 </div>
 
-                <label
-                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  for="file_input"
-                >
-                  Upload file
-                </label>
-                <input
-                  onChange={handleChangeButton}
-                  class="block w-full py-2 px-2 text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-                  id="groupImage"
-                  type="file"
-                />
-                {groupErorr.groupImageError && 
-                  <span className="text-red-500">{groupErorr.groupImageError}</span>
-                  }
+                <div>
+                  <label
+                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                    for="file_input"
+                  >
+                    Upload file
+                  </label>
+                  <input
+                    onChange={handleChangeButton}
+                    class="block w-full py-2 px-2 text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                    id="groupImage"
+                    type="file"
+                  />
+                  {groupErorr.groupImageError && (
+                    <span className="text-red-500">
+                      {groupErorr.groupImageError}
+                    </span>
+                  )}
+                </div>
+                <AdvancedImage cldImg={gorupInfo.groupImage} />
                 <button
                   type="submit"
                   onClick={handleSubmit}
